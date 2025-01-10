@@ -46,16 +46,11 @@ runs:
           
           $items = ConvertTo-Json $array -Compress
           "BICEP_FILES='$items'" >> $env:GITHUB_ENV
-      - name: Set GitHub Path
-        run: echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
-        shell: pwsh
-        env:
-          GITHUB_ACTION_PATH: ${{ github.action_path }}
       - name: "Linting the bicep files"
         run: |
           $sarif = [System.Convert]::ToBoolean("${{ inputs.create-sarif }}")
           $markdown = [System.Convert]::ToBoolean("${{ inputs.markdown-report }}")
-          .\Get-BicepLintingResults.ps1 -BicepFilesJson ${{ env.BICEP_FILES }} `
+          ${{ github.action_path }}\Get-BicepLintingResults.ps1 -BicepFilesJson ${{ env.BICEP_FILES }} `
                      -CreateSarif $sarif `
                      -MarkdownReport $markdown `
                      -SarifOutputPath ${{ inputs.sarif-output-path }} `
