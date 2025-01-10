@@ -18,14 +18,14 @@ PROCESS {
 
     $combinedSarif = @{
         version = "2.1.0"
-        runs = @{
-            tool = @{
-                driver = @{
-                    name = "bicep"
+        runs    = @(@{
+                tool    = @{
+                    driver = @{
+                        name = "bicep"
+                    }
                 }
-            }
-            results = @()
-        }
+                results = @()
+            })
     }
 
     if ($files.Count -eq 0) {
@@ -40,24 +40,19 @@ PROCESS {
                 $report += "**$($file)**"
 
                 foreach ($result in $run.results) {
-
-                    if ($combinedSarif.runs.results -eq 0 -and $CreateSarif) {
-                        $combinedSarif = $sarif
-                    }else {
-                        if ($CreateSarif) {
-                            $combinedSarif.runs[0].results += $result
-                        }
+                    if ($CreateSarif) {
+                        $combinedSarif.runs[0].results += $result
+                    }
                         
-                        $level = switch ($result.level) {
-                            "error" { ":triangular_flag_on_post:" }
-                            "warning" { ":warning:" }
-                            default { ":information_source:" }
-                        }
-                        foreach ($location in $result.locations) {
-                            $report += "* $($level) - **Line:** $($location.physicalLocation.region.startLine) - $($result.message.text)"
-                        }
-                    }                
-                }
+                    $level = switch ($result.level) {
+                        "error" { ":triangular_flag_on_post:" }
+                        "warning" { ":warning:" }
+                        default { ":information_source:" }
+                    }
+                    foreach ($location in $result.locations) {
+                        $report += "* $($level) - **Line:** $($location.physicalLocation.region.startLine) - $($result.message.text)"
+                    }
+                }                
             }
         }
     }
@@ -68,7 +63,7 @@ PROCESS {
         $combinedSarif | ConvertTo-Json -Depth 100 | Out-File -FilePath $SarifFilePath
     }
 
-    if($MarkdownReport) {
+    if ($MarkdownReport) {
         Write-Output "Creating Markdown report"
         $report += "Markdown report created: $SarifFilePath"
         $report | Out-File -FilePath $MarkdownReportFilePath
@@ -76,6 +71,6 @@ PROCESS {
 
     $report >> $env:GITHUB_STEP_SUMMARY
 }
-END{
+END {
     Write-Host "Done Bicep Linting"
 }
