@@ -55,7 +55,7 @@ runs:
         run: |
           $sarif = [System.Convert]::ToBoolean("${{ inputs.create-sarif }}")
           $markdown = [System.Convert]::ToBoolean("${{ inputs.markdown-report }}")
-          .\script.ps1 -BicepFilesJson ${{ env.BICEP_FILES }} `
+          .\Get-BicepLintingResults.ps1 -BicepFilesJson ${{ env.BICEP_FILES }} `
                      -CreateSarif $sarif `
                      -MarkdownReport $markdown `
                      -SarifOutputPath ${{ inputs.sarif-output-path }} `
