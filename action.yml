@@ -30,7 +30,7 @@ runs:
       - name: Get files
         shell: pwsh
         run: |
-          $allFiles = ${{ inputs.allfiles }}
+          $allFiles = [System.Convert]::ToBoolean("${{ inputs.allfiles }}")
           if($allFiles){
             Write-Output "Checking all files"
             $files = Get-ChildItem -Path . -Recurse -Include *.bicep,*.bicepparam | Select-Object -ExpandProperty FullName
