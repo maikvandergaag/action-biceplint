@@ -15,6 +15,7 @@ PROCESS {
     # Create a default markdown report
     $report = @()
     $report += "## Bicep Linting Report :rocket:"
+    $lintingError = $false
 
     $combinedSarif = @{
         version = "2.1.0"
@@ -51,6 +52,10 @@ PROCESS {
                     }
                     foreach ($location in $result.locations) {
                         $report += "* $($level) - **Line:** $($location.physicalLocation.region.startLine) - $($result.message.text)"
+
+                        if ($result.level -eq "error") {
+                            $lintingError = $true
+                        }
                     }
                 }                
             }
@@ -70,6 +75,11 @@ PROCESS {
     }
 
     $report >> $env:GITHUB_STEP_SUMMARY
+
+    if ($lintingError) {
+        Write-Output "Linting errors found"
+        exit 1
+    }
 }
 END {
     Write-Host "Done Bicep Linting"
