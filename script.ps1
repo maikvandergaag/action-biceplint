@@ -18,7 +18,14 @@ PROCESS {
 
     $combinedSarif = @{
         version = "2.1.0"
-        runs = @()
+        runs = @{
+            tool = @{
+                driver = @{
+                    name = "bicep"
+                }
+            }
+            results = @()
+        }
     }
 
     if ($files.Count -eq 0) {
@@ -34,7 +41,7 @@ PROCESS {
 
                 foreach ($result in $run.results) {
 
-                    if ($combinedSarif.runs.Count -eq 0 -and $CreateSarif) {
+                    if ($combinedSarif.runs.results -eq 0 -and $CreateSarif) {
                         $combinedSarif = $sarif
                     }else {
                         if ($CreateSarif) {
