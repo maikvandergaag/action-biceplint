@@ -8,7 +8,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: maikvandergaag/action-biceplink@main
+      - uses: maikvandergaag/action-biceplink@v1
         with:
           allfiles: true
           create-sarif: true
