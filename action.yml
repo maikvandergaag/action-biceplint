@@ -1,0 +1,57 @@
+name: "Bicep Linting"
+description: "Composite action for running Bicep Linting"
+inputs:
+  allfiles:
+    type: boolean
+    description: 'Check all files or only the changed files'
+    default: false
+  create-sarif:
+    description: 'Create a combined SARIF file'
+    type: boolean
+    default: true
+  markdown-report:
+    description: 'Create a markdown report'
+    type: boolean
+    default: false
+  sarif-output-path:
+    description: 'The file path to save the SARIF file'
+    type: string
+    default: 'bicep-lint.sarif'
+  markdown-output-path:
+    description: 'The file path to save the markdown report'
+    type: string
+    default: 'bicep-lint.md'
+runs:
+  using: "composite"
+  steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Get files
+        shell: pwsh
+        run: |
+          $allFiles = ${{ inputs.allfiles }}
+          if($allFiles){
+            Write-Output "Checking all files"
+            $files = Get-ChildItem -Path . -Recurse -Include *.bicep,*.bicepparam | Select-Object -ExpandProperty FullName
+          }else{
+            Write-Output "Checking only the changed files"
+            $files = git diff HEAD~1 --name-only | Where-Object { $_ -like '*.bicep' -or $_ -like '*.bicepparam' }
+          }
+          
+          $array = @()
+          foreach($file in $files){
+            $array += $file
+          }
+          
+          $items = ConvertTo-Json $array -Compress
+          "BICEP_FILES='$items'" >> $env:GITHUB_ENV
+      - name: "Linting the bicep files"
+        run: |
+          script.ps1 -BicepFilesJson ${{ env.BICEP_FILES }} `
+                     -CreateSarif ${{ inputs.create-sarif }} `
+                     -MarkdownReport ${{ inputs.markdown-report }} `
+                     -SarifOutputPath ${{ inputs.sarif-output-path }} `
+                     -MarkdownOutputPath ${{ inputs.markdown-output-path }}
+        shell: pwsh
+
