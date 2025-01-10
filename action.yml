@@ -53,8 +53,8 @@ runs:
           GITHUB_ACTION_PATH: ${{ github.action_path }}
       - name: "Linting the bicep files"
         run: |
-          $sarif = [System.Convert]::ToBoolean(${{ inputs.create-sarif }})
-          $markdown = [System.Convert]::ToBoolean(${{ inputs.markdown-report }})
+          $sarif = [System.Convert]::ToBoolean("${{ inputs.create-sarif }}")
+          $markdown = [System.Convert]::ToBoolean("${{ inputs.markdown-report }}")
           .\script.ps1 -BicepFilesJson ${{ env.BICEP_FILES }} `
                      -CreateSarif $sarif `
                      -MarkdownReport $markdown `
