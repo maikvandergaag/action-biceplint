@@ -48,7 +48,7 @@ runs:
           "BICEP_FILES='$items'" >> $env:GITHUB_ENV
       - name: "Linting the bicep files"
         run: |
-          script.ps1 -BicepFilesJson ${{ env.BICEP_FILES }} `
+          ${GITHUB_ACTION_PATH}/script.ps1 -BicepFilesJson ${{ env.BICEP_FILES }} `
                      -CreateSarif ${{ inputs.create-sarif }} `
                      -MarkdownReport ${{ inputs.markdown-report }} `
                      -SarifOutputPath ${{ inputs.sarif-output-path }} `
