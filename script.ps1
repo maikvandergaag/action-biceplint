@@ -16,7 +16,10 @@ PROCESS {
     $report = @()
     $report += "## Bicep Linting Report :rocket:"
 
-    $combinedSarif = @()
+    $combinedSarif = @{
+        version = "2.1.0"
+        runs = @()
+    }
 
     if ($files.Count -eq 0) {
         $report += "No bicep files found in the commit"
@@ -31,7 +34,7 @@ PROCESS {
 
                 foreach ($result in $run.results) {
 
-                    if ($null -eq $combinedSarif.runs -and $CreateSarif) {
+                    if ($combinedSarif.runs.Count -eq 0 -and $CreateSarif) {
                         $combinedSarif = $sarif
                     }else {
                         if ($CreateSarif) {
