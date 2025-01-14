@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Bicep Linting
-        uses: maikvandergaag/action-biceplint@main
+        uses: maikvandergaag/action-biceplint@v1
         with:
           allfiles: true
           create-sarif: true
@@ -95,7 +95,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Bicep Linting
-        uses: maikvandergaag/action-biceplint@main
+        uses: maikvandergaag/action-biceplint@v1
         with:
           allfiles: true
           create-sarif: true
