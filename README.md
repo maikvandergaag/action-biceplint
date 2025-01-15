@@ -87,9 +87,6 @@ on:
   pull_request:
   workflow_dispatch:
 
-env:
-  allFiles: ${{ github.event_name != 'pull_request' && true || ( github.base_ref == 'main' && true || false) }}
-
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -97,7 +94,7 @@ jobs:
       - name: Bicep Linting
         uses: maikvandergaag/action-biceplint@v1.0.0
         with:
-          allfiles: true
+          allfiles: ${{ github.event_name == 'pull_request' || ( github.base_ref == 'main') }}
           create-sarif: true
           markdown-report: false
           sarif-output-path: bicep-lint.sarif
