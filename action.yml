@@ -1,5 +1,8 @@
 name: "Bicep Linting"
 description: "Composite action for running Bicep Linting"
+branding:
+  icon: 'code'
+  color: 'blue'
 inputs:
   allfiles:
     type: boolean
